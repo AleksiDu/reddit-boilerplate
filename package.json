@@ -13,5 +13,11 @@
   "devDependencies": {
     "@types/node": "^18.15.11",
     "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "@mikro-orm/cli": "^5.6.16",
+    "@mikro-orm/core": "^5.6.16",
+    "@mikro-orm/postgresql": "^5.6.16",
+    "pg": "^8.10.0"
   }
 }
