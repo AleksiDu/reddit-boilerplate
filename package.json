@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "watch": "tsc -w",
+    "dev": "nodemon dist/index.js",
     "start": "ts-node src/index.ts"
   },
   "author": "",
