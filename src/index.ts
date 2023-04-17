@@ -4,13 +4,14 @@ import { Post } from "./entities/Post";
 
 const main = async () => {
   const orm = await MikroORM.init(microConfig);
-
-  const post = new Post();
-  post.title = "my first post";
-  console.log("----------sql 2----------");
-  await orm.em.persistAndFlush(post);
-
-  await orm.close();
+  await orm.getMigrator().up();
+  const em = orm.em.fork(); // Create a new EntityManager instance
+  const post = em.create(Post, {
+    title: "my first post",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  });
+  await em.persistAndFlush(post);
 };
 
 main().catch((err) => console.log(err));
