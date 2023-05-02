@@ -21,7 +21,7 @@ class UsernamePasswordInput {
 
 @Resolver()
 export class UserResolver {
-  @Mutation(() => String)
+  @Mutation(() => User)
   async register(
     @Arg("options") options: UsernamePasswordInput,
     @Ctx() { em }: MyContext
@@ -34,6 +34,6 @@ export class UserResolver {
       password: hashedPassword,
     });
     await em.persistAndFlush(user);
-    return "hello world";
+    return user;
   }
 }
