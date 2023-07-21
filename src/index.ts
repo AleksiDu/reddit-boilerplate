@@ -9,6 +9,8 @@ import microConfig from "./mikro-orm.config";
 import express from "express";
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
+import bodyParser from "body-parser";
+import cors from "cors";
 import { buildSchema } from "type-graphql";
 import { HelloResolver } from "./resolvers/hello";
 import { PostResolver } from "./resolvers/post";
@@ -34,15 +36,17 @@ const main = async () => {
   await apolloServer.start();
 
   app.use(
-    "graphql",
+    "/graphql",
+    cors<cors.CorsRequest>(),
+    bodyParser.json(),
     expressMiddleware(apolloServer, {
       context: async () => ({ em: em }),
     })
   );
 
-  app.listen(4000, () => {
-    console.log("server started on localhost:4000");
-  });
+  await new Promise<void>((resolve) => app.listen({ port: 4000 }, resolve));
+
+  console.log("http://localhost:4000/graphql");
 };
 
 main().catch((err) => console.log(err));
