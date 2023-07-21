@@ -1,12 +1,22 @@
 import "reflect-metadata";
-import { MikroORM } from "@mikro-orm/core";
+import {
+  Connection,
+  EntityManager,
+  IDatabaseDriver,
+  MikroORM,
+} from "@mikro-orm/core";
 import microConfig from "./mikro-orm.config";
 import express from "express";
-import { ApolloServer } from "apollo-server-express";
+import { ApolloServer } from "@apollo/server";
+import { expressMiddleware } from "@apollo/server/express4";
 import { buildSchema } from "type-graphql";
 import { HelloResolver } from "./resolvers/hello";
 import { PostResolver } from "./resolvers/post";
 import { UserResolver } from "./resolvers/user";
+
+interface ContextType {
+  em: EntityManager<IDatabaseDriver<Connection>>;
+}
 
 const main = async () => {
   const orm = await MikroORM.init(microConfig);
@@ -15,15 +25,20 @@ const main = async () => {
 
   const app = express();
 
-  const apolloServer = new ApolloServer({
+  const apolloServer = new ApolloServer<ContextType>({
     schema: await buildSchema({
       resolvers: [HelloResolver, PostResolver, UserResolver],
       validate: false,
     }),
-    context: () => ({ em: em }),
   });
   await apolloServer.start();
-  apolloServer.applyMiddleware({ app });
+
+  app.use(
+    "graphql",
+    expressMiddleware(apolloServer, {
+      context: async () => ({ em: em }),
+    })
+  );
 
   app.listen(4000, () => {
     console.log("server started on localhost:4000");
