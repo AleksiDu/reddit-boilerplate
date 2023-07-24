@@ -1,10 +1,5 @@
 import "reflect-metadata";
-import {
-  Connection,
-  EntityManager,
-  IDatabaseDriver,
-  MikroORM,
-} from "@mikro-orm/core";
+import { MikroORM } from "@mikro-orm/core";
 import microConfig from "./mikro-orm.config";
 import express from "express";
 import { ApolloServer } from "@apollo/server";
@@ -15,10 +10,10 @@ import { buildSchema } from "type-graphql";
 import { HelloResolver } from "./resolvers/hello";
 import { PostResolver } from "./resolvers/post";
 import { UserResolver } from "./resolvers/user";
-
-interface ContextType {
-  em: EntityManager<IDatabaseDriver<Connection>>;
-}
+import { createClient } from "redis";
+import session from "express-session";
+import RedisStore from "connect-redis";
+import { __prod__ } from "./constants";
 
 const main = async () => {
   const orm = await MikroORM.init(microConfig);
@@ -27,7 +22,32 @@ const main = async () => {
 
   const app = express();
 
-  const apolloServer = new ApolloServer<ContextType>({
+  // Initialize client.
+  const redisClient = createClient();
+  redisClient.connect().catch(console.error);
+  // Initialize store.
+  const redisStore = new RedisStore({
+    client: redisClient,
+    disableTouch: true,
+  });
+  // Initialize sesssion storage.
+  app.use(
+    session({
+      name: "qid",
+      store: redisStore,
+      cookie: {
+        maxAge: 1000 * 60 * 60 * 24 * 365 * 10, // 10 years
+        httpOnly: true,
+        sameSite: "lax",
+        secure: __prod__,
+      },
+      secret: "abcdefg",
+      resave: false,
+      saveUninitialized: false,
+    })
+  );
+
+  const apolloServer = new ApolloServer({
     schema: await buildSchema({
       resolvers: [HelloResolver, PostResolver, UserResolver],
       validate: false,
@@ -40,7 +60,7 @@ const main = async () => {
     cors<cors.CorsRequest>(),
     bodyParser.json(),
     expressMiddleware(apolloServer, {
-      context: async () => ({ em: em }),
+      context: async ({ req, res }) => ({ em: em, req, res }),
     })
   );
 
