@@ -1,4 +1,6 @@
 import {
+  Box,
+  Button,
   FormControl,
   FormErrorMessage,
   FormLabel,
@@ -6,6 +8,7 @@ import {
 } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import Wrapper from "../components/Wrapper";
+import InputField from "../components/InputField";
 
 const Register = () => {
   return (
@@ -14,18 +17,29 @@ const Register = () => {
         initialValues={{ username: "", password: "" }}
         onSubmit={(values) => console.log(values)}
       >
-        {({ values, handleChange }) => (
+        {({ isSubmitting }) => (
           <Form>
-            <FormControl>
-              <FormLabel htmlFor="username">Username</FormLabel>
-              <Input
-                value={values.username}
-                onChange={handleChange}
-                id="username"
-                placeholder="username"
+            <InputField
+              name="username"
+              label="Username"
+              placeholder="username"
+            />
+            <Box mt={4}>
+              <InputField
+                name="password"
+                label="Password"
+                placeholder="password"
+                type="password"
               />
-              {/* <FormErrorMessage>{form.errors.name}</FormErrorMessage> */}
-            </FormControl>
+            </Box>
+            <Button
+              type="submit"
+              colorScheme="teal"
+              mt={4}
+              isLoading={isSubmitting}
+            >
+              register
+            </Button>
           </Form>
         )}
       </Formik>
