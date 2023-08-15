@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { TypedDocumentNode as DocumentNode } from "@graphql-typed-document-node/core";
+
 import gql from "graphql-tag";
 import * as Urql from "urql";
 export type Maybe<T> = T | null;
@@ -21,8 +21,6 @@ export type Incremental<T> =
       [P in keyof T]?: P extends " $fragmentName" | "__typename" ? T[P] : never
     };
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
-/** All built-in and custom scalars, mapped to their actual values */
-
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string };
@@ -47,10 +45,6 @@ export type Mutation = {
   updatePost?: Maybe<Post>;
 };
 
-export type MutationCreatePostArgs = {
-  title: Scalars["String"]["input"];
-};
-
 export type MutationDeletePostArgs = {
   id: Scalars["Float"]["input"];
 };
@@ -61,6 +55,10 @@ export type MutationLoginArgs = {
 
 export type MutationRegisterArgs = {
   options: UsernamePasswordInput;
+};
+
+export type MutationCreatePostArgs = {
+  title: Scalars["String"]["input"];
 };
 
 export type MutationUpdatePostArgs = {
