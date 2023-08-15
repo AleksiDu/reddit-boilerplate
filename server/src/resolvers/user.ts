@@ -70,7 +70,7 @@ export class UserResolver {
       return {
         errors: [
           {
-            field: "username",
+            field: "password",
             message: "length must be greater than 3",
           },
         ],

@@ -13,7 +13,7 @@ import { UserResolver } from "./resolvers/user";
 import { createClient } from "redis";
 import session from "express-session";
 import RedisStore from "connect-redis";
-import { __prod__ } from "./constants";
+import { COOKIE_NAME, __prod__ } from "./constants";
 
 const main = async () => {
   const orm = await MikroORM.init(microConfig);
@@ -25,19 +25,20 @@ const main = async () => {
   // Initialize client.
   const redisClient = createClient();
   redisClient.connect().catch(console.error);
+  console.log("redis client ", redisClient);
   // Initialize store.
   const redisStore = new RedisStore({
     client: redisClient,
     disableTouch: true,
   });
-  // Initialize sesssion storage.
+  // Initialize session storage.
   app.use(
     session({
-      name: "qid",
+      name: COOKIE_NAME,
       store: redisStore,
       cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 365 * 10, // 10 years
-        httpOnly: true,
+        httpOnly: false,
         sameSite: "lax",
         secure: __prod__,
       },
