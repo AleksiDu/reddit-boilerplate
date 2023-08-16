@@ -14,6 +14,7 @@ import { createClient } from "redis";
 import session from "express-session";
 import RedisStore from "connect-redis";
 import { COOKIE_NAME, __prod__ } from "./constants";
+import { exec } from "child_process";
 
 const main = async () => {
   const orm = await MikroORM.init(microConfig);
@@ -25,7 +26,7 @@ const main = async () => {
   // Initialize client.
   const redisClient = createClient();
   redisClient.connect().catch(console.error);
-  console.log("redis client ", redisClient);
+
   // Initialize store.
   const redisStore = new RedisStore({
     client: redisClient,
@@ -63,13 +64,14 @@ const main = async () => {
     }),
     bodyParser.json(),
     expressMiddleware(apolloServer, {
-      context: async ({ req, res }) => ({ em: em, req, res }),
+      context: async ({ req, res }) => ({ em, req, res }),
     })
   );
 
   await new Promise<void>((resolve) => app.listen({ port: 4000 }, resolve));
 
-  console.log("http://localhost:4000/graphql");
+  exec(`start http://localhost:4000/graphql`);
+  console.log("Server is running at http://localhost:4000/graphql");
 };
 
 main().catch((err) => console.log(err));
