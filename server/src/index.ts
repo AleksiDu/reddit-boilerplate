@@ -64,13 +64,13 @@ const main = async () => {
     }),
     bodyParser.json(),
     expressMiddleware(apolloServer, {
-      context: async ({ req, res }) => ({ em, req, res }),
+      context: async ({ req, res }) => ({ em: em, req, res }),
     })
   );
 
   await new Promise<void>((resolve) => app.listen({ port: 4000 }, resolve));
 
-  exec(`start http://localhost:4000/graphql`);
+  //exec(`start http://localhost:4000/graphql`);
   console.log("Server is running at http://localhost:4000/graphql");
 };
 

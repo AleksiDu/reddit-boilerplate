@@ -1,5 +1,5 @@
 /* eslint-disable */
-
+import { TypedDocumentNode as DocumentNode } from "@graphql-typed-document-node/core";
 import gql from "graphql-tag";
 import * as Urql from "urql";
 export type Maybe<T> = T | null;
@@ -45,6 +45,10 @@ export type Mutation = {
   updatePost?: Maybe<Post>;
 };
 
+export type MutationCreatePostArgs = {
+  title: Scalars["String"]["input"];
+};
+
 export type MutationDeletePostArgs = {
   id: Scalars["Float"]["input"];
 };
@@ -55,10 +59,6 @@ export type MutationLoginArgs = {
 
 export type MutationRegisterArgs = {
   options: UsernamePasswordInput;
-};
-
-export type MutationCreatePostArgs = {
-  title: Scalars["String"]["input"];
 };
 
 export type MutationUpdatePostArgs = {
@@ -105,6 +105,24 @@ export type UsernamePasswordInput = {
   username: Scalars["String"]["input"];
 };
 
+export type LoginMutationVariables = Exact<{
+  username: Scalars["String"]["input"];
+  password: Scalars["String"]["input"];
+}>;
+
+export type LoginMutation = {
+  __typename?: "Mutation";
+  login: {
+    __typename?: "UserResponse";
+    errors?: Array<{
+      __typename?: "FieldError";
+      field: string;
+      message: string;
+    }> | null;
+    user?: { __typename?: "User"; id: number; username: string } | null;
+  };
+};
+
 export type RegisterMutationVariables = Exact<{
   username: Scalars["String"]["input"];
   password: Scalars["String"]["input"];
@@ -123,6 +141,24 @@ export type RegisterMutation = {
   };
 };
 
+export const LoginDocument = gql`
+  mutation Login($username: String!, $password: String!) {
+    login(options: { username: $username, password: $password }) {
+      errors {
+        field
+        message
+      }
+      user {
+        id
+        username
+      }
+    }
+  }
+`;
+
+export function useLoginMutation() {
+  return Urql.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument);
+}
 export const RegisterDocument = gql`
   mutation Register($username: String!, $password: String!) {
     register(options: { username: $username, password: $password }) {
