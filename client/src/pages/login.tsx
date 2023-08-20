@@ -15,10 +15,7 @@ const Login = () => {
       <Formik
         initialValues={{ username: "", password: "" }}
         onSubmit={async (values, { setErrors }) => {
-          console.log("values => ", values);
           const response = await login(values);
-          console.log("Response from login mutation:", response);
-
           if (response.data?.login.errors) {
             setErrors(toErrorMap(response.data.login.errors));
           } else if (response.data?.login.user){
