@@ -11,6 +11,7 @@ import {
 import { MyContext } from "../types";
 import { User } from "../entities/User";
 import argon2 from "argon2";
+import { error } from "console";
 
 @InputType()
 class UsernamePasswordInput {
@@ -108,7 +109,10 @@ export class UserResolver {
     @Arg("options") options: UsernamePasswordInput,
     @Ctx() { em, req }: MyContext
   ): Promise<UserResponse> {
-    const user = await em.findOneOrFail(User, { username: options.username });
+    const user = await em
+      .findOneOrFail(User, { username: options.username })
+      .catch(error);
+
     if (!user) {
       return {
         errors: [
@@ -133,6 +137,7 @@ export class UserResolver {
 
     // store user id sessions
     // keep them logged in
+
     req.session.userId = user.id;
 
     return {
