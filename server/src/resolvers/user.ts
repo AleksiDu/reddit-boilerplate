@@ -13,6 +13,7 @@ import { User } from "../entities/User";
 import argon2 from "argon2";
 import { error } from "console";
 import { EntityManager } from "@mikro-orm/postgresql";
+import { COOKIE_NAME } from "../constants";
 
 @InputType()
 class UsernamePasswordInput {
@@ -151,15 +152,16 @@ export class UserResolver {
   }
 
   @Mutation(() => Boolean)
-  logout(@Ctx() { req }: MyContext) {
-    return new Promise((res) =>
+  logout(@Ctx() { req, res }: MyContext) {
+    return new Promise((resolve) =>
       req.session.destroy((err) => {
+        res.clearCookie(COOKIE_NAME);
         if (err) {
           console.error(err);
-          res(false);
+          resolve(false);
           return;
         }
-        res(true);
+        resolve(true);
       })
     );
   }
