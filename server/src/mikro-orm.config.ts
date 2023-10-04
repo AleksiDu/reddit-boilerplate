@@ -3,6 +3,7 @@ import { MikroORM } from "@mikro-orm/core";
 import { __prod__ } from "./constants";
 import path from "path";
 import { User } from "./entities/User";
+import "dotenv/config";
 
 export default {
   migrations: {
@@ -13,8 +14,8 @@ export default {
   dbName: "lireddit",
   type: "postgresql",
   debug: !__prod__,
-  user: "postgres",
-  password: "postgres",
+  user: process.env.PG_USERNAME,
+  password: process.env.PG_PASSWORD,
   host: "localhost",
   port: 5432,
 } as Parameters<typeof MikroORM.init>[0];
