@@ -8,9 +8,6 @@ const NavBar = () => {
 
   let body = null;
 
-  console.log("me", fetching)
-
-  console.log("data",data)
 
   // data is loading
   if (fetching){
