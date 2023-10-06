@@ -1,0 +1,8 @@
+query Posts {
+  post(id: $postId) {
+    createdAt
+    id
+    title
+    updatedAt
+  }
+}

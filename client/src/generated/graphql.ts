@@ -22,6 +22,7 @@ export type Incremental<T> =
     };
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 /** All built-in and custom scalars, mapped to their actual values */
+
 export type Scalars = {
   ID: { input: string; output: string };
   String: { input: string; output: string };

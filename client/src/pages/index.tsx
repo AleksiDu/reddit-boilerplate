@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Client, ssrExchange } from "urql/core";
+import { Client, ssrExchange } from "@urql/core";
 import NavBar from "../components/NavBar";
 import { createUrqlClient } from "../utils/createUrqlClient";
 import { UrqlProvider } from "@urql/next";
@@ -10,8 +10,6 @@ const Index = () => {
     const client = createUrqlClient();
     return [client as Client, ssr];
   }, []);
-
-  console.log("client", client);
 
   return (
     <UrqlProvider client={client} ssr={ssr}>
