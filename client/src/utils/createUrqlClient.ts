@@ -5,6 +5,7 @@ import {
   LogoutMutation,
   MeDocument,
   MeQuery,
+  RegisterMutation,
 } from "../generated/graphql";
 import { betterUpdateQuery } from "./betterUpdateQuery";
 
@@ -40,6 +41,22 @@ export const createUrqlClient = (ssr: any) => {
                 { query: MeDocument },
                 _results,
                 () => ({ me: null })
+              );
+            },
+            register: (_result, args, cache, info) => {
+              betterUpdateQuery<RegisterMutation, MeQuery>(
+                cache,
+                { query: MeDocument },
+                _result,
+                (result, query) => {
+                  if (result.register.errors) {
+                    return query;
+                  } else {
+                    return {
+                      me: result.register.user,
+                    };
+                  }
+                }
               );
             },
           },
