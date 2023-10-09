@@ -7,13 +7,12 @@ import {
   MeQuery,
 } from "../generated/graphql";
 import { betterUpdateQuery } from "./betterUpdateQuery";
-import { SSRExchange } from "@urql/next";
 
-export const createUrqlClient = () => {
-  return new Client({
+export const createUrqlClient = (ssr: any) => {
+  return {
     url: "http://localhost:4000/graphql",
     fetchOptions: {
-      credentials: "include",
+      credentials: "include" as const,
     },
     exchanges: [
       cacheExchange({
@@ -46,7 +45,8 @@ export const createUrqlClient = () => {
           },
         },
       }),
+      ssr,
       fetchExchange,
     ],
-  });
+  };
 };

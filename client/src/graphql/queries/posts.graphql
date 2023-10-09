@@ -1,5 +1,5 @@
 query Posts {
-  post(id: $postId) {
+  posts {
     createdAt
     id
     title

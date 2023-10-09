@@ -20,8 +20,10 @@
     "graphql-code-generator": "^0.18.2",
     "init": "^0.1.2",
     "next": "latest",
+    "next-urql": "^5.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-is": "^18.2.0",
     "urql": "^4.0.5"
   },
   "devDependencies": {

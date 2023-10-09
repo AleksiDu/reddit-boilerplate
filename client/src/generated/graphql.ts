@@ -22,7 +22,7 @@ export type Incremental<T> =
     };
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 /** All built-in and custom scalars, mapped to their actual values */
-
+/** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string };
   String: { input: string; output: string };
@@ -172,6 +172,19 @@ export type MeQuery = {
     | null;
 };
 
+export type PostsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PostsQuery = {
+  __typename?: "Query";
+  posts: Array<{
+    __typename?: "Post";
+    createdAt: string;
+    id: number;
+    title: string;
+    updatedAt: string;
+  }>;
+};
+
 export const RegularUserFragmentDoc = gql`
   fragment RegularUser on User {
     id
@@ -241,6 +254,25 @@ export function useMeQuery(
 ) {
   return Urql.useQuery<MeQuery, MeQueryVariables>({
     query: MeDocument,
+    ...options,
+  });
+}
+export const PostsDocument = gql`
+  query Posts {
+    posts {
+      createdAt
+      id
+      title
+      updatedAt
+    }
+  }
+`;
+
+export function usePostsQuery(
+  options?: Omit<Urql.UseQueryArgs<PostsQueryVariables>, "query">
+) {
+  return Urql.useQuery<PostsQuery, PostsQueryVariables>({
+    query: PostsDocument,
     ...options,
   });
 }
