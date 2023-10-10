@@ -1,6 +1,6 @@
 import { Box, Button, Flex, Link } from "@chakra-ui/react";
 import NextLink from "next/link";
-import {useLogoutMutation, useMeQuery, RegularUserFragment } from "../generated/graphql";
+import { RegularUserFragment, useLogoutMutation, useMeQuery } from "../generated/graphql";
 import { isServer } from "../utils/isServer";
 
 
@@ -38,6 +38,7 @@ const NavBar = () => {
                 </Box>
                 <Button onClick={()=> logout({})} isLoading={logoutFetching} variant="link">logout</Button>
               </Flex>
+          
               )
         
   }
