@@ -1,22 +1,24 @@
-import "reflect-metadata";
-import { MikroORM } from "@mikro-orm/core";
-import microConfig from "./mikro-orm.config";
-import express from "express";
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
+import { MikroORM } from "@mikro-orm/core";
 import bodyParser from "body-parser";
+import RedisStore from "connect-redis";
 import cors from "cors";
+import express from "express";
+import session from "express-session";
+import { createClient } from "redis";
+import "reflect-metadata";
 import { buildSchema } from "type-graphql";
+import { COOKIE_NAME, __prod__ } from "./constants";
+import microConfig from "./mikro-orm.config";
 import { HelloResolver } from "./resolvers/hello";
 import { PostResolver } from "./resolvers/post";
 import { UserResolver } from "./resolvers/user";
-import { createClient } from "redis";
-import session from "express-session";
-import RedisStore from "connect-redis";
-import { COOKIE_NAME, __prod__ } from "./constants";
-import { exec } from "child_process";
+import { sendEmail } from "./utils/sendEmail";
 
 const main = async () => {
+  sendEmail("test@test.com", "HELLO!!!").catch(console.error);
+
   const orm = await MikroORM.init(microConfig);
   await orm.getMigrator().up();
   const em = orm.em.fork(); // Create a new EntityManager instance
