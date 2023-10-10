@@ -17,9 +17,10 @@ import { UserResolver } from "./resolvers/user";
 import { sendEmail } from "./utils/sendEmail";
 
 const main = async () => {
-  sendEmail("test@test.com", "HELLO!!!").catch(console.error);
+  // sendEmail("test@test.com", "HELLO!!!").catch(console.error);
 
   const orm = await MikroORM.init(microConfig);
+
   await orm.getMigrator().up();
   const em = orm.em.fork(); // Create a new EntityManager instance
 
