@@ -38,6 +38,7 @@ export type FieldError = {
 
 export type Mutation = {
   __typename?: "Mutation";
+  changePassword: UserResponse;
   createPost: Post;
   deletePost: Scalars["Boolean"]["output"];
   forgotPassword: Scalars["Boolean"]["output"];
@@ -45,6 +46,11 @@ export type Mutation = {
   logout: Scalars["Boolean"]["output"];
   register: UserResponse;
   updatePost?: Maybe<Post>;
+};
+
+export type MutationChangePasswordArgs = {
+  newPassword: Scalars["String"]["input"];
+  token: Scalars["String"]["input"];
 };
 
 export type MutationCreatePostArgs = {
@@ -119,6 +125,28 @@ export type RegularUserFragment = {
   id: number;
   username: string;
 } & { " $fragmentName"?: "RegularUserFragment" };
+
+export type ChangePasswordMutationVariables = Exact<{
+  token: Scalars["String"]["input"];
+  newPassword: Scalars["String"]["input"];
+}>;
+
+export type ChangePasswordMutation = {
+  __typename?: "Mutation";
+  changePassword: {
+    __typename?: "UserResponse";
+    errors?: Array<{
+      __typename?: "FieldError";
+      field: string;
+      message: string;
+    }> | null;
+    user?:
+      | ({ __typename?: "User" } & {
+          " $fragmentRefs"?: { RegularUserFragment: RegularUserFragment };
+        })
+      | null;
+  };
+};
 
 export type LoginMutationVariables = Exact<{
   usernameOrEmail: Scalars["String"]["input"];
@@ -197,6 +225,27 @@ export const RegularUserFragmentDoc = gql`
     username
   }
 `;
+export const ChangePasswordDocument = gql`
+  mutation ChangePassword($token: String!, $newPassword: String!) {
+    changePassword(token: $token, newPassword: $newPassword) {
+      errors {
+        field
+        message
+      }
+      user {
+        ...RegularUser
+      }
+    }
+  }
+  ${RegularUserFragmentDoc}
+`;
+
+export function useChangePasswordMutation() {
+  return Urql.useMutation<
+    ChangePasswordMutation,
+    ChangePasswordMutationVariables
+  >(ChangePasswordDocument);
+}
 export const LoginDocument = gql`
   mutation Login($usernameOrEmail: String!, $password: String!) {
     login(usernameOrEmail: $usernameOrEmail, password: $password) {
