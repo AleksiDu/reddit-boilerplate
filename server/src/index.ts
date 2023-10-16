@@ -6,7 +6,7 @@ import RedisStore from "connect-redis";
 import cors from "cors";
 import express from "express";
 import session from "express-session";
-import { createClient } from "redis";
+import Redis from "ioredis";
 import "reflect-metadata";
 import { buildSchema } from "type-graphql";
 import { COOKIE_NAME, __prod__ } from "./constants";
@@ -27,12 +27,12 @@ const main = async () => {
   const app = express();
 
   // Initialize client.
-  const redisClient = createClient();
-  redisClient.connect().catch(console.error);
+  const redis = new Redis();
+  redis.connect().catch(console.error);
 
   // Initialize store.
   const redisStore = new RedisStore({
-    client: redisClient,
+    client: redis,
     disableTouch: true,
   });
   // Initialize session storage.
@@ -67,7 +67,7 @@ const main = async () => {
     }),
     bodyParser.json(),
     expressMiddleware(apolloServer, {
-      context: async ({ req, res }) => ({ em: em, req, res }),
+      context: async ({ req, res }) => ({ em: em, req, res, redis }),
     })
   );
 
